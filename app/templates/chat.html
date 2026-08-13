@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-<div class="app">
+<div id="app">
     <!-- Top navigation -->
         <header class="navbar">
             <div class="navbar-left">
                 <button id="sidebar-toggle">☰</button>
-                <!-- <h1>AI Assistant</h1> -->
+<!--                <h1>AI Assistant</h1>-->
             </div>
 
             <div class="navbar-right">
-                <button id="logout-button">Logout</button>
+                <!-- settings / profile / etc. -->
             </div>
         </header>
 
@@ -24,7 +24,7 @@
         <!-- Side Bar -->
         <aside class="sidebar">
             <!-- New Chat -->
-            <button id="new-chat" onclick="newChat()">+ New Chat</button>
+            <button id="new-chat">+ New Chat</button>
             <!-- Chat List -->
             <div class="chat-list-container">
                 <h3 id="chat-list-title">Recent Chats</h3>
@@ -38,15 +38,12 @@
         <main class="chat-container">
             <!-- Messages -->
             <div class="messages" id="messages">
-                <div id="welcome-message">
-                    <h1>How can I help you today?</h1>
-                    <p>Ask me anything or start a conversation.</p>
-                </div>
+                <!-- Messages-->
             </div>
             <!-- Message input -->
             <div class="input-container">
                 <textarea id="message-input" placeholder="Ask anything..."></textarea>
-                <button onclick="sendMessage()" id="send-button">Send</button>
+                <button id="send-button">Send</button>
             </div>
         </main>
     </div>

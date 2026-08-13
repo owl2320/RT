@@ -37,7 +37,8 @@ def _generate_title(db:Session, conversation:Conversation, message:str) -> None:
         title = generate_title(message)
         set_conversation_title(db,conversation.user_id,conversation.id,title)
 
-@router.get('/conversations',response_model=ConversationPreview)
+#conversation accessing
+@router.get('/conversations',response_model=list[ConversationPreview])
 def list_chat(db: Session = Depends(get_db),user: User = Depends(get_current_user)):
     """Return a list of all conversations of a user"""
     return list_conversations(db,user.id)
