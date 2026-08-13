@@ -14,3 +14,6 @@ venv/
 
 # Logs
 *.log
+
+#tests
+.test.html

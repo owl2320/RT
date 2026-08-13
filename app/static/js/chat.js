@@ -59,6 +59,7 @@ async function readStream(response) {
     const decoder = new TextDecoder();
 
     let buffer = "";
+    let aiText = "";
 
     const aiContent = addMessage("assistant", "");
 
@@ -70,19 +71,18 @@ async function readStream(response) {
         const events = buffer.split("\n\n");
         buffer = events.pop();
 
-
         for(const eventString of events) {
             if(!eventString.startsWith("data:")) continue;
 
             const raw = eventString.slice(6);
             let event;
+
             try {
                 event = JSON.parse(raw);
             }
             catch {
                 continue;
             }
-
 
             switch(event.type) {
                 case "conversation":
@@ -91,17 +91,30 @@ async function readStream(response) {
                     break;
 
                 case "token":
-                    aiContent.textContent += event.content;
+                    aiText += event.content;
+
+                    aiContent.innerHTML = marked.parse(aiText);
+
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     break;
 
                 case "error":
-                    aiContent.textContent += "\n[Error] " + event.message;
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    aiText += "\n[Error] " + event.message;
+                    aiContent.textContent = aiText;
 
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     break;
 
                 case "done":
+                    renderMathInElement(aiContent, {
+                        delimiters: [
+                            {left: "$$", right: "$$", display: true},
+                            {left: "\\[", right: "\\]", display: true},
+                            {left: "$", right: "$", display: false},
+                            {left: "\\(", right: "\\)", display: false}
+                        ]
+                    });
+
                     return;
             }
         }
@@ -262,16 +275,26 @@ function highlightActiveConversation() {
     });
 }
 
+//adds messages to message container
 function addMessage(role,text) {
     const message = document.createElement("div");
 
     if (role === "user") {
         message.classList.add("user-message");
+        message.textContent = text;
     } else if(role === "assistant"){
         message.classList.add("assistant-message");
+        message.innerHTML = marked.parse(text);
+        renderMathInElement(message, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "\\[", right: "\\]", display: true},
+            {left: "$", right: "$", display: false},
+            {left: "\\(", right: "\\)", display: false}
+        ]
+    });
     }
 
-    message.textContent = text;
     messagesContainer.appendChild(message);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
